@@ -22,23 +22,37 @@ env/
 
 
 # Data (local / large files)
-data/raw/
-data/processed/
-data/external/
+data/raw/**/*
+!data/raw/.gitkeep
 
+data/processed/**/*
+!data/processed/.gitkeep
+
+data/external/**/*
+!data/external/.gitkeep
 
 # Model artifacts 
-models/metrics
-models/trained
+models/metrics/**/*
+!models/metrics/.gitkeep
+
+models/trained/**/*
+!models/trained/.gitkeep
+
 *.joblib
 *.pkl
 *.h5
 
 
 # Reports & outputs
-reports/figures
-reports/metrics
-outputs/
+reports/figures/**/*
+!reports/figures/.gitkeep
+
+reports/metrics/**/*
+!reports/metrics/.gitkeep
+
+outputs/**/*
+!outputs/.gitkeep
+
 mlruns/
 
 
