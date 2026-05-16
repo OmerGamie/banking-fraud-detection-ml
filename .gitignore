@@ -1,0 +1,68 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+
+# Data (local / large files)
+data/raw/
+data/processed/
+data/external/
+
+
+# Model artifacts 
+models/metrics
+models/trained
+*.joblib
+*.pkl
+*.h5
+
+
+# Reports & outputs
+reports/figures
+reports/metrics
+outputs/
+mlruns/
+
+
+# Logs
+*.log
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+
+# Environment variables / secrets
+.env
+kaggle.json
+.kaggle/
+
+
+# IDEs
+.vscode/
+.idea/
+
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/

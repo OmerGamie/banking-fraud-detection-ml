@@ -1,0 +1,30 @@
+[project]
+name = "banking-fraud-detection-ml"
+version = "0.1.0"
+description = "A production grade classical ML pipeline for banking fraud detection."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "black>=26.3.1",
+    "imbalanced-learn>=0.14.1",
+    "jupyter>=1.1.1",
+    "lightgbm>=4.6.0",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.5",
+    "optuna>=4.8.0",
+    "pandas>=3.0.3",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+    "scikit-learn>=1.8.0",
+    "seaborn>=0.13.2",
+    "shap>=0.51.0",
+    "xgboost>=3.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+]
