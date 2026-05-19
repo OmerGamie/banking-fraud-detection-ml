@@ -38,7 +38,8 @@ from src.features import engineer_features
 # Build Preprocessing Pipeline
 def build_preprocessor(
         numerical_features: list,
-        categorical_features: list
+        categorical_features: list,
+        passthrough_features: list
 ) ->ColumnTransformer:
     """
     Create preprocessing pipeline.
@@ -59,14 +60,22 @@ def build_preprocessor(
     ])
     
     categorical_pipeline = Pipeline([
-        ("encoder", OneHotEncoder(drop="if_binary"))
+        ("encoder", OneHotEncoder(
+            handle_unknown="ignore",
+            sparse_output=False,
+            drop="if_binary"
+        ))
     ])
 
     # Construct Preprocessing Pipeline
     preprocessor = ColumnTransformer([
         ("num", numerical_pipline, numerical_features),
-        ("cat", categorical_pipeline, categorical_features)
-    ])
+        ("cat", categorical_pipeline, categorical_features),
+        ("pass", "passthrough", passthrough_features)
+    ], remainder="drop")
+
+    if hasattr(preprocessor, "set_output"):
+        preprocessor.set_output(transform="pandas")
     
     return preprocessor
 
@@ -114,7 +123,29 @@ Complete preprocessing workflow.
 
     # Detect numerical and categorical columns
     numerical_features = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
-    categorical_features = X.select_dtypes(include=["object", "category", "bool"]).columns.to_list()
+    categorical_features = X.select_dtypes(include=["object", "category", "bool", "string"]).columns.to_list()
+
+    # Keep binary flags unscaled
+    passthrough_features = []
+
+    binary_flags = [
+        "night_transaction_flag",
+        "suspicious_ip_flag",
+        "international_transaction_flag",
+        "card_present_flag",
+    ]
+
+    for flag in binary_flags:
+        if flag in numerical_features:
+            numerical_features.remove(flag)
+            passthrough_features.append(flag)
+    
+    print("\nPreprocessing Summary")
+    print("-" * 40)
+
+    print(f"Numerical Features   : {len(numerical_features)}")
+    print(f"Categorical Features : {len(categorical_features)}")
+    print(f"Binary Flags         : {len(passthrough_features)}")
 
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(
@@ -126,14 +157,15 @@ Complete preprocessing workflow.
     )
 
     # Build Preprocessor
-    preprocesor = build_preprocessor(
+    preprocessor = build_preprocessor(
         numerical_features=numerical_features,
-        categorical_features=categorical_features
+        categorical_features=categorical_features,
+        passthrough_features=passthrough_features
     )
 
     # Transform Data
-    X_train_processed = preprocesor.fit_transform(X_train)
-    X_test_processed = preprocesor.transform(X_test)
+    X_train_processed = preprocessor.fit_transform(X_train)
+    X_test_processed = preprocessor.transform(X_test)
 
     print("\nPreprocessing Completed Successfully.")
 
@@ -145,7 +177,7 @@ Complete preprocessing workflow.
         X_test_processed,
         y_train,
         y_test,
-        preprocesor
+        preprocessor
     )
 
 # Independent Testing
@@ -160,4 +192,8 @@ if __name__ == "__main__":
 
     df = load_raw_data()
 
-    preprocess_dataset(df)
+    X_train, X_test, y_train, y_test, preprocessor = (
+        preprocess_dataset(df)
+    )
+    print("\nPreview:")
+    print(X_train.head())
